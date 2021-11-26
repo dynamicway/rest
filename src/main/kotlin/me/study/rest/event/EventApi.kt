@@ -1,6 +1,6 @@
 package me.study.rest.event
 
-import me.study.rest.event.dto.EventDto
+import me.study.rest.event.dto.ResisterEventDto
 import org.springframework.hateoas.MediaTypes
 import org.springframework.hateoas.server.mvc.linkTo
 import org.springframework.http.ResponseEntity
@@ -16,11 +16,11 @@ class EventApi(
 ) {
 
     @PostMapping
-    fun createEvents(
-        @RequestBody eventDto: EventDto
-    ): ResponseEntity<EventDto> {
-        val uri = linkTo<EventApi> { createEvents(eventDto) }.slash("{id}").toUri()
-        return ResponseEntity.created(uri).body(eventDto)
+    fun registerEvent(
+        @RequestBody resisterEventDto: ResisterEventDto
+    ): ResponseEntity<ResisterEventDto> {
+        val uri = linkTo<EventApi> { registerEvent(resisterEventDto) }.slash("{id}").toUri()
+        return ResponseEntity.created(uri).body(resisterEventDto)
     }
 
 }

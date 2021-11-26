@@ -2,7 +2,7 @@ package me.study.rest.event.dto
 
 import java.time.LocalDateTime
 
-class EventDto(
+class ResisterEventDto(
     val id: Long = 0,
     val description: String? = null,
     val location: String? = null,
