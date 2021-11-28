@@ -19,13 +19,12 @@ class Event(
     private var _limitOfEnrollment: Int? = null,
     private var _offline: Boolean? = null,
     private var _free: Boolean? = null,
+    private var _name: String? = null,
+    private var _beginEnrollmentDateTime: LocalDateTime? = null,
+    private var _closeEnrollmentDateTime: LocalDateTime? = null,
+    private var _beginEventDateTime: LocalDateTime? = null,
+    private var _endEventDateTime: LocalDateTime? = null
 ) {
-    private lateinit var _name: String
-    private lateinit var _beginEnrollmentDateTime: LocalDateTime
-    private lateinit var _closeEnrollmentDateTime: LocalDateTime
-    private lateinit var _beginEventDateTime: LocalDateTime
-    private lateinit var _endEventDateTime: LocalDateTime
-
 
     @Enumerated(STRING)
     private lateinit var _eventStatus: Status
@@ -45,18 +44,34 @@ class Event(
     val free
         get() = _free!!
     val name
-        get() = _name
+        get() = _name!!
     val beginEnrollmentDateTime
-        get() = _beginEnrollmentDateTime
+        get() = _beginEnrollmentDateTime!!
     val closeEnrollmentDateTime
-        get() = _closeEnrollmentDateTime
+        get() = _closeEnrollmentDateTime!!
     val beginEventDateTime
-        get() = _beginEventDateTime
+        get() = _beginEventDateTime!!
     val endEventDateTime
-        get() = _endEventDateTime
+        get() = _endEventDateTime!!
 
     enum class Status {
         DRAFT, PUBLISHED, BEGAN_ENROLLMENT
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Event
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
 
 }
