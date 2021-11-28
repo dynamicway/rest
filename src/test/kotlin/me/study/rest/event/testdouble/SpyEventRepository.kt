@@ -9,8 +9,12 @@ import org.springframework.data.domain.Sort
 import java.util.*
 
 class SpyEventRepository: EventRepository {
+    lateinit var saveArguments: Event
+    lateinit var saveReturns: Event
+
     override fun <S : Event?> save(entity: S): S {
-        TODO("Not yet implemented")
+        saveArguments = entity as Event
+        return saveReturns as S
     }
 
     override fun <S : Event?> saveAll(entities: MutableIterable<S>): MutableList<S> {
