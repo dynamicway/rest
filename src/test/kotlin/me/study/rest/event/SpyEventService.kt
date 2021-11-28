@@ -1,7 +1,10 @@
 package me.study.rest.event
 
 class SpyEventService : EventService {
-    lateinit var registerEvent_returns: Event
-    override fun registerEvent(): Event = registerEvent_returns
-
+    lateinit var registerEventReturns: Event
+    lateinit var registerEventArguments: Event
+    override fun registerEvent(registerEvent: Event): Event {
+        registerEventArguments = registerEvent
+        return registerEventReturns
+    }
 }
