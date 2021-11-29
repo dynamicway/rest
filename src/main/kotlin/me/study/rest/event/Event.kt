@@ -23,11 +23,10 @@ class Event(
     private var _beginEnrollmentDateTime: LocalDateTime? = null,
     private var _closeEnrollmentDateTime: LocalDateTime? = null,
     private var _beginEventDateTime: LocalDateTime? = null,
-    private var _endEventDateTime: LocalDateTime? = null
-) {
-
+    private var _endEventDateTime: LocalDateTime? = null,
     @Enumerated(STRING)
-    private lateinit var _eventStatus: Status
+    private var _eventStatus: Status? = null
+) {
 
     val description
         get() = _description
@@ -53,6 +52,8 @@ class Event(
         get() = _beginEventDateTime!!
     val endEventDateTime
         get() = _endEventDateTime!!
+    val eventStatus
+        get() = _eventStatus!!
 
     enum class Status {
         DRAFT, PUBLISHED, BEGAN_ENROLLMENT
