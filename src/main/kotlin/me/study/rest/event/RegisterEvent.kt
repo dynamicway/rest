@@ -2,7 +2,7 @@ package me.study.rest.event
 
 import java.time.LocalDateTime
 
-class RegisterEventDto(
+class RegisterEvent(
     val id: Long = 0,
     val description: String? = null,
     val location: String? = null,
@@ -34,7 +34,7 @@ class RegisterEventDto(
     )
 
     companion object {
-        fun of(event: Event) = RegisterEventDto(
+        fun of(event: Event) = RegisterEvent(
             id = event.id,
             description = event.description,
             location = event.location,

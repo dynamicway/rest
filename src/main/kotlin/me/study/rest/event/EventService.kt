@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 interface EventService {
-    fun registerEvent(registerEvent: Event): Event
+    fun registerEvent(registerEvent: RegisterEvent): RegisterEvent
 }
 
 @Service
@@ -12,7 +12,8 @@ interface EventService {
 class EventServiceImpl(
     private val eventRepository: EventRepository
 ) : EventService {
-    override fun registerEvent(registerEvent: Event): Event {
-        return eventRepository.save(registerEvent)
+    override fun registerEvent(registerEvent: RegisterEvent): RegisterEvent {
+        val eventEntity = eventRepository.save(registerEvent.toEntity())
+        return RegisterEvent.of(eventEntity)
     }
 }
