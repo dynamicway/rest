@@ -1,5 +1,7 @@
 package me.study.rest.event
 
+import me.study.rest.event.Event.Status
+import me.study.rest.event.Event.Status.DRAFT
 import java.time.LocalDateTime
 
 class RegisterEvent(
@@ -9,14 +11,20 @@ class RegisterEvent(
     val basePrice: Int,
     val maxPrice: Int,
     val limitOfEnrollment: Int,
-    val offline: Boolean,
-    val free: Boolean,
     val name: String,
     val beginEnrollmentDateTime: LocalDateTime,
     val closeEnrollmentDateTime: LocalDateTime,
     val beginEventDateTime: LocalDateTime,
-    val endEventDateTime: LocalDateTime
+    val endEventDateTime: LocalDateTime,
 ) {
+
+    var offline: Boolean = false
+        private set
+    var free: Boolean = false
+        private set
+    var eventStatus: Status = DRAFT
+        private set
+
     fun toEntity() = Event(
         id = id,
         _description = description,
@@ -49,20 +57,27 @@ class RegisterEvent(
     }
 
     companion object {
-        fun of(event: Event) = RegisterEvent(
-            id = event.id,
-            description = event.description,
-            location = event.location,
-            basePrice = event.basePrice,
-            maxPrice = event.maxPrice,
-            limitOfEnrollment = event.limitOfEnrollment,
-            offline = event.offline,
-            free = event.free,
-            name = event.name,
-            beginEnrollmentDateTime = event.beginEnrollmentDateTime,
-            closeEnrollmentDateTime = event.closeEnrollmentDateTime,
-            beginEventDateTime = event.beginEventDateTime,
-            endEventDateTime = event.endEventDateTime
-        )
+        fun of(event: Event): RegisterEvent {
+            val registerEvent = RegisterEvent(
+                id = event.id,
+                description = event.description,
+                location = event.location,
+                basePrice = event.basePrice,
+                maxPrice = event.maxPrice,
+                limitOfEnrollment = event.limitOfEnrollment,
+                name = event.name,
+                beginEnrollmentDateTime = event.beginEnrollmentDateTime,
+                closeEnrollmentDateTime = event.closeEnrollmentDateTime,
+                beginEventDateTime = event.beginEventDateTime,
+                endEventDateTime = event.endEventDateTime
+            )
+            registerEvent.apply {
+                offline = event.offline
+                free = event.free
+                eventStatus = event.eventStatus
+            }
+
+            return registerEvent
+        }
     }
 }

@@ -28,8 +28,6 @@ internal class EventServiceImplTest : ShouldSpec() {
                 basePrice = 0,
                 maxPrice = 0,
                 limitOfEnrollment = 0,
-                offline = false,
-                free = false,
                 name = "",
                 beginEnrollmentDateTime = givenLocalDateTime,
                 closeEnrollmentDateTime = givenLocalDateTime,

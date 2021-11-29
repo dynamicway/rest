@@ -7,9 +7,9 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 import me.study.rest.event.testdouble.SpyEventService
-import org.springframework.hateoas.MediaTypes
+import org.springframework.hateoas.MediaTypes.HAL_JSON
 import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -40,8 +40,6 @@ internal class EventApiTest : ShouldSpec() {
                     basePrice = 0,
                     maxPrice = 0,
                     limitOfEnrollment = 0,
-                    offline = false,
-                    free = false,
                     name = "",
                     beginEnrollmentDateTime = LocalDateTime.of(2021, 1, 1, 1, 1),
                     closeEnrollmentDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1),
@@ -51,8 +49,8 @@ internal class EventApiTest : ShouldSpec() {
                 spyEventService.registerEventReturns = givenRequest
                 mockMvc.perform(
                     post("/api/events")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest))
                 )
                     .andExpect(status().isCreated)
@@ -64,8 +62,6 @@ internal class EventApiTest : ShouldSpec() {
                     basePrice = 0,
                     maxPrice = 0,
                     limitOfEnrollment = 0,
-                    offline = false,
-                    free = false,
                     name = "",
                     beginEnrollmentDateTime = LocalDateTime.of(2021, 1, 1, 1, 1),
                     closeEnrollmentDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1),
@@ -75,8 +71,8 @@ internal class EventApiTest : ShouldSpec() {
                 spyEventService.registerEventReturns = givenRegisterEvent
                 mockMvc.perform(
                     post("/api/events")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(givenRegisterEvent))
                 )
                 spyEventService.registerEventArguments shouldBe givenRegisterEvent
