@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
+import me.study.rest.event.testdouble.SpyEventService
 import org.springframework.hateoas.MediaTypes
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -25,7 +26,7 @@ internal class EventApiTest : ShouldSpec() {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
 
-    override fun beforeTest(testCase: TestCase) {
+    override fun beforeContainer(testCase: TestCase) {
         spyEventService = SpyEventService()
         eventApi = EventApi(
             spyEventService
@@ -35,7 +36,7 @@ internal class EventApiTest : ShouldSpec() {
     init {
         context("registerEvent") {
             should("응답 검증") {
-                val givenRequest = RegisterEventDto(
+                val givenRequest = RegisterEvent(
                     basePrice = 0,
                     maxPrice = 0,
                     limitOfEnrollment = 0,
@@ -47,7 +48,7 @@ internal class EventApiTest : ShouldSpec() {
                     beginEventDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1),
                     endEventDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
                 )
-                spyEventService.registerEventReturns = givenRequest.toEntity()
+                spyEventService.registerEventReturns = givenRequest
                 mockMvc.perform(
                     post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +60,7 @@ internal class EventApiTest : ShouldSpec() {
                     .andExpect(jsonPath("id").exists())
             }
             should("행위 검증") {
-                val givenRequest = RegisterEventDto(
+                val givenRegisterEvent = RegisterEvent(
                     basePrice = 0,
                     maxPrice = 0,
                     limitOfEnrollment = 0,
@@ -71,27 +72,14 @@ internal class EventApiTest : ShouldSpec() {
                     beginEventDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1),
                     endEventDateTime = LocalDateTime.of(2021, 1, 1, 1, 1, 1)
                 )
-                val givenEvent = Event(
-                    id = 0,
-                    _basePrice = givenRequest.basePrice,
-                    _maxPrice = givenRequest.maxPrice,
-                    _limitOfEnrollment = givenRequest.limitOfEnrollment,
-                    _offline = givenRequest.offline,
-                    _free = givenRequest.free,
-                    _name = givenRequest.name,
-                    _beginEnrollmentDateTime = givenRequest.beginEnrollmentDateTime,
-                    _closeEnrollmentDateTime = givenRequest.closeEnrollmentDateTime,
-                    _beginEventDateTime = givenRequest.beginEventDateTime,
-                    _endEventDateTime = givenRequest.endEventDateTime,
-                )
-                spyEventService.registerEventReturns = givenEvent
+                spyEventService.registerEventReturns = givenRegisterEvent
                 mockMvc.perform(
                     post("/api/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
-                        .content(objectMapper.writeValueAsString(givenRequest))
+                        .content(objectMapper.writeValueAsString(givenRegisterEvent))
                 )
-                spyEventService.registerEventArguments shouldBe givenEvent
+                spyEventService.registerEventArguments shouldBe givenRegisterEvent
             }
         }
     }

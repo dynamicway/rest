@@ -18,13 +18,13 @@ class EventApi(
     @PostMapping
     @ResponseStatus(CREATED)
     fun registerEvent(
-        @RequestBody registerEventDto: RegisterEventDto
-    ): ResponseEntity<EntityModel<RegisterEventDto>> {
-        val registerEvent = eventService.registerEvent(registerEventDto.toEntity())
-        val selfRel = linkTo(methodOn(EventApi::class.java).registerEvent(registerEventDto)).withSelfRel()
-        val getRel = linkTo(methodOn(EventApi::class.java).registerEvent(registerEventDto)).slash(registerEvent.id)
+        @RequestBody registerEvent: RegisterEvent
+    ): ResponseEntity<EntityModel<RegisterEvent>> {
+        val registeredEvent = eventService.registerEvent(registerEvent)
+        val selfRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).withSelfRel()
+        val getRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).slash(registeredEvent.id)
             .withRel { "get" }
-        val registerEventEntityModel = EntityModel.of(RegisterEventDto.of(registerEvent), selfRel, getRel)
+        val registerEventEntityModel = EntityModel.of(registeredEvent, selfRel, getRel)
         return ResponseEntity.created(registerEventEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
             .body(registerEventEntityModel)
     }

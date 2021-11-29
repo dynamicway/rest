@@ -33,6 +33,21 @@ class RegisterEvent(
         _endEventDateTime = endEventDateTime,
     )
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RegisterEvent
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
     companion object {
         fun of(event: Event) = RegisterEvent(
             id = event.id,
