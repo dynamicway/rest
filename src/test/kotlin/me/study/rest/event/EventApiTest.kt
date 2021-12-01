@@ -7,6 +7,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
 import me.study.rest.event.testdouble.SpyEventService
+import me.study.rest.util.ErrorField
+import me.study.rest.util.ErrorResponse
 import org.springframework.hateoas.MediaTypes.HAL_JSON
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType.APPLICATION_JSON
@@ -19,7 +21,11 @@ import java.time.LocalDateTime
 internal class EventApiTest : ShouldSpec() {
     private lateinit var eventApi: EventApi
     private lateinit var spyEventService: SpyEventService
-    private val mockMvc: MockMvc by lazy { MockMvcBuilders.standaloneSetup(eventApi).build() }
+    private val mockMvc: MockMvc by lazy {
+        MockMvcBuilders.standaloneSetup(eventApi)
+            .setControllerAdvice(EventApiExceptionResponder())
+            .build()
+    }
     private val objectMapper: ObjectMapper by lazy {
         val objectMapper = ObjectMapper()
         objectMapper.registerModule(JavaTimeModule())
@@ -76,6 +82,43 @@ internal class EventApiTest : ShouldSpec() {
                         .content(objectMapper.writeValueAsString(givenRegisterEvent))
                 )
                 spyEventService.registerEventArguments shouldBe givenRegisterEvent
+            }
+            should("RegisterEventBadRequestException 이 터지면 BadRequest 반환") {
+                val givenLocalDateTime = LocalDateTime.of(2021, 12, 25, 0, 0, 0)
+                val givenRegisterEvent = RegisterEvent(
+                    basePrice = 0,
+                    maxPrice = 0,
+                    limitOfEnrollment = 0,
+                    name = "",
+                    beginEnrollmentDateTime = givenLocalDateTime,
+                    closeEnrollmentDateTime = givenLocalDateTime,
+                    beginEventDateTime = givenLocalDateTime,
+                    endEventDateTime = givenLocalDateTime
+                )
+                val givenMessage = "Base price higher than the highest price when there is a limit price"
+                val givenErrorFields = listOf(
+                    ErrorField("givenFirstErrorField", 0),
+                    ErrorField("givenSecondErrorField", 0),
+                    ErrorField("givenThirdErrorField", 0)
+                )
+                spyEventService.registerEventException = RegisterEventBadRequestException(
+                    message = givenMessage,
+                    givenErrorFields
+                )
+                val errorResponse = ErrorResponse(
+                    givenMessage,
+                    givenErrorFields
+                )
+
+                mockMvc.perform(
+                    post("/api/events")
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
+                        .content(objectMapper.writeValueAsString(givenRegisterEvent))
+                )
+                    .andExpect(status().isBadRequest)
+                    .andExpect(content().contentType(HAL_JSON))
+                    .andExpect(content().json(objectMapper.writeValueAsString(errorResponse)))
             }
         }
     }
