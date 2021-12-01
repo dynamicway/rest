@@ -2,6 +2,7 @@ package me.study.rest.event
 
 import me.study.rest.event.Event.Status
 import me.study.rest.event.Event.Status.DRAFT
+import me.study.rest.util.ErrorField
 import java.time.LocalDateTime
 
 class RegisterEvent(
@@ -47,7 +48,14 @@ class RegisterEvent(
 
     private fun checkPrice() {
         if (basePrice > maxPrice && limitOfEnrollment != 0)
-            throw RegisterEventBadRequestException()
+            throw RegisterEventBadRequestException(
+                message = "Base price higher than the highest price when there is a limit price",
+                listOf(
+                    ErrorField("basePrice", basePrice),
+                    ErrorField("maxPrice", maxPrice),
+                    ErrorField("limitOfEnrollment", limitOfEnrollment)
+                )
+            )
     }
 
     override fun equals(other: Any?): Boolean {
