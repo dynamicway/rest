@@ -41,6 +41,15 @@ class RegisterEvent(
         _endEventDateTime = endEventDateTime,
     )
 
+    fun validate() {
+        checkPrice()
+    }
+
+    private fun checkPrice() {
+        if (basePrice > maxPrice && limitOfEnrollment != 0)
+            throw RegisterEventBadRequest()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
