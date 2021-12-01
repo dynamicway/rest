@@ -13,6 +13,7 @@ class EventServiceImpl(
     private val eventRepository: EventRepository
 ) : EventService {
     override fun registerEvent(registerEvent: RegisterEvent): RegisterEvent {
+        registerEvent.validate()
         val eventEntity = eventRepository.save(registerEvent.toEntity())
         return RegisterEvent.of(eventEntity)
     }

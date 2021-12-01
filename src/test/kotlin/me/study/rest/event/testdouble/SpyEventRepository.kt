@@ -8,10 +8,11 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import java.util.*
 
-class SpyEventRepository: EventRepository {
-    lateinit var saveArguments: Event
-    lateinit var saveReturns: Event
+class SpyEventRepository : EventRepository {
+    var saveArguments: Event = Event()
+    var saveReturns: Event = Event()
 
+    @Suppress("UNCHECKED_CAST")
     override fun <S : Event?> save(entity: S): S {
         saveArguments = entity as Event
         return saveReturns as S

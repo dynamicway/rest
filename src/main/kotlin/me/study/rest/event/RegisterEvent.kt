@@ -40,6 +40,7 @@ class RegisterEvent(
         _closeEnrollmentDateTime = closeEnrollmentDateTime,
         _beginEventDateTime = beginEventDateTime,
         _endEventDateTime = endEventDateTime,
+        _eventStatus = eventStatus
     )
 
     fun validate() {
@@ -47,7 +48,7 @@ class RegisterEvent(
     }
 
     private fun checkPrice() {
-        if (basePrice > maxPrice && limitOfEnrollment != 0)
+        if (basePrice > 0 && maxPrice == 0 && limitOfEnrollment != 0)
             throw RegisterEventBadRequestException(
                 message = "Base price higher than the highest price when there is a limit price",
                 listOf(
