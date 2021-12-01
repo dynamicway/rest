@@ -1,7 +1,8 @@
 package me.study.rest.event
 
-import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.web.bind.annotation.ResponseStatus
+import me.study.rest.util.ErrorField
 
-@ResponseStatus(BAD_REQUEST)
-class RegisterEventBadRequestException : RuntimeException()
+class RegisterEventBadRequestException(
+    override val message: String,
+    val errorFields: List<ErrorField>
+) : RuntimeException(message)
