@@ -47,7 +47,7 @@ class RegisterEvent(
 
     private fun checkPrice() {
         if (basePrice > maxPrice && limitOfEnrollment != 0)
-            throw RegisterEventBadRequest()
+            throw RegisterEventBadRequestException()
     }
 
     override fun equals(other: Any?): Boolean {
