@@ -1,6 +1,6 @@
 package me.study.rest.util
 
-class ErrorField(
+data class ErrorField(
     val field: String,
     val value: Any
 )
