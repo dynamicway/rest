@@ -97,13 +97,13 @@ internal class EventApiTest : ShouldSpec() {
                 )
                 val givenMessage = "Base price higher than the highest price when there is a limit price"
                 val givenErrorFields = listOf(
-                    ErrorField("givenFirstErrorField", 0),
-                    ErrorField("givenSecondErrorField", 0),
-                    ErrorField("givenThirdErrorField", 0)
+                    ErrorField("basePrice", 0),
+                    ErrorField("maxPrice", 0),
+                    ErrorField("limitOfEnrollment", 0)
                 )
                 spyEventService.registerEventException = RegisterEventBadRequestException(
-                    message = givenMessage,
-                    givenErrorFields
+                    errorCause = RegisterEventBadRequestException.Cause.BASE_PRICE_HIGHER_THAN_THE_HIGHEST_PRICE,
+                    givenRegisterEvent
                 )
                 val errorResponse = ErrorResponse(
                     givenMessage,

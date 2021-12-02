@@ -2,7 +2,7 @@ package me.study.rest.event
 
 import me.study.rest.event.Event.Status
 import me.study.rest.event.Event.Status.DRAFT
-import me.study.rest.util.ErrorField
+import me.study.rest.event.RegisterEventBadRequestException.Cause.*
 import java.time.LocalDateTime
 
 class RegisterEvent(
@@ -45,17 +45,31 @@ class RegisterEvent(
 
     fun validate() {
         checkPrice()
+        checkNegativePrice()
+        checkNegativePrice()
     }
 
     private fun checkPrice() {
         if (basePrice > 0 && maxPrice == 0 && limitOfEnrollment != 0)
             throw RegisterEventBadRequestException(
-                message = "Base price higher than the highest price when there is a limit price",
-                listOf(
-                    ErrorField("basePrice", basePrice),
-                    ErrorField("maxPrice", maxPrice),
-                    ErrorField("limitOfEnrollment", limitOfEnrollment)
-                )
+                errorCause = BASE_PRICE_HIGHER_THAN_THE_HIGHEST_PRICE,
+                this
+            )
+    }
+
+    private fun checkNegativePrice() {
+        if (basePrice < 0 || maxPrice < 0)
+            throw RegisterEventBadRequestException(
+                errorCause = NEGATIVE_PRICE,
+                this
+            )
+    }
+
+    private fun checkNegativeLimitOfEnrollment() {
+        if (limitOfEnrollment < 0)
+            throw RegisterEventBadRequestException(
+                errorCause = NEGATIVE_ENROLLMENT,
+                this
             )
     }
 
