@@ -3,6 +3,10 @@ package me.study.rest.event
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.test.TestCase
+import io.kotest.data.forAll
+import io.kotest.data.headers
+import io.kotest.data.row
+import io.kotest.data.table
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import me.study.rest.event.testdouble.SpyEventRepository
@@ -114,6 +118,32 @@ internal class EventServiceImplTest : ShouldSpec() {
             )
 
         }
+        should("registerEvent 의 배팅 금액, 상한가 중 하나가 음수일 경우 RegisterEventBadRequestException 발생") {
+            val givenLocalDateTime = LocalDateTime.of(2021, 12, 25, 0, 0, 0)
+            table(
+                headers("basePrice", "maxPrice"),
+                row(-1, 0),
+                row(0, -1 ),
+                row(-1, -1)
+            ).forAll { basePrice, maxPrice ->
+                val givenRegisterEvent = RegisterEvent(
+                    basePrice = basePrice,
+                    maxPrice = maxPrice,
+                    limitOfEnrollment = 0,
+                    name = "",
+                    beginEnrollmentDateTime = givenLocalDateTime,
+                    closeEnrollmentDateTime = givenLocalDateTime,
+                    beginEventDateTime = givenLocalDateTime,
+                    endEventDateTime = givenLocalDateTime
+                )
+                val actualException =
+                    shouldThrow<RegisterEventBadRequestException> { eventService.registerEvent(givenRegisterEvent) }
+                actualException.message shouldBe "negative price"
+                actualException.errorFields shouldContainExactly listOf(
+                    ErrorField("basePrice", basePrice),
+                    ErrorField("maxPrice", maxPrice)
+                )
+            }
+        }
     }
-
 }
