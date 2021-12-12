@@ -13,7 +13,9 @@ import org.springframework.hateoas.MediaTypes.HAL_JSON
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.ResultHandler
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.time.LocalDateTime
@@ -61,6 +63,10 @@ internal class EventApiTest : ShouldSpec() {
                 )
                     .andExpect(status().isCreated)
                     .andExpect(header().exists(HttpHeaders.LOCATION))
+                    .andExpect(jsonPath("links.length()").value(3))
+                    .andExpect(jsonPath("links[0].rel").value("self"))
+                    .andExpect(jsonPath("links[1].rel").value("get"))
+                    .andExpect(jsonPath("links[2].rel").value("patch"))
                     .andExpect(jsonPath("id").exists())
             }
             should("행위 검증") {

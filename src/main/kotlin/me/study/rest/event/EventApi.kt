@@ -21,10 +21,11 @@ class EventApi(
         @RequestBody registerEvent: RegisterEvent
     ): ResponseEntity<EntityModel<RegisterEvent>> {
         val registeredEvent = eventService.registerEvent(registerEvent)
-        val selfRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).withSelfRel()
-        val getRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).slash(registeredEvent.id)
-            .withRel { "get" }
-        val registerEventEntityModel = EntityModel.of(registeredEvent, selfRel, getRel)
+        val selfRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).slash(registeredEvent.id).withSelfRel()
+        val getRel = linkTo(methodOn(EventApi::class.java).registerEvent(registeredEvent)).withRel { "get" }
+        val patchRel = linkTo(methodOn(EventApi::class.java).registerEvent(registerEvent)).slash(registeredEvent.id).withRel { "patch" }
+        val registerEventEntityModel = EntityModel.of(registeredEvent,
+            selfRel, getRel, patchRel)
         return ResponseEntity.created(registerEventEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
             .body(registerEventEntityModel)
     }
